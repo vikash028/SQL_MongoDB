@@ -71,3 +71,21 @@ END
 AS People_stage_wise
 
 FROM worker;
+
+select * from worker where department = 'Admin'order by department desc;
+
+select department count(department) as total_employees from worker 
+where department ='HR' or department 'Account' group by department;
+
+select department ,count(department) as total_employees
+FROM worker
+GROUP BY department
+ORDER BY total_employees DESC
+LIMIT ALL;
+
+
+select department ,count(department) as total_employees
+FROM worker
+GROUP BY department
+ORDER BY total_employees DESC
+LIMIT 1;
