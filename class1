@@ -1,0 +1,36 @@
+show databases;
+ 
+ create database VIT;
+ 
+ drop database VIT ;
+ 
+ show databases;
+
+create database VIT;
+drop database VIT;
+use ViT;
+create table CSE(
+s_id int,
+s_name varchar(30),
+s_mark int
+);
+drop table cse;
+show tables from VIt;
+
+SELECT 
+    *
+FROM
+    cse;
+insert into cse values (1001,'Ram Prasad',99);
+
+ALTER TABLE cse RENAME column 
+    s_country TO s_state;
+desc cse;
+select * from cse;
+
+delete from cse where s_id=1002;
+
+insert into cse values(10153,'Ujjwal',50,'India'),(1003,'Tamilarasan',85,);
+
+
+UPDATE cse SET s_name ='Vishnu'WHERE s_id=1002;
