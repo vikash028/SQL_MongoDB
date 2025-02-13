@@ -1,0 +1,50 @@
+-- 1. Fetch all Worker details ordered by FIRST_NAME in Ascending order
+SELECT * 
+FROM Worker 
+ORDER BY FIRST_NAME ASC;
+
+-- 2. Fetch all Worker details ordered by FIRST_NAME (Ascending) and DEPARTMENT (Descending)
+SELECT * 
+FROM Worker 
+ORDER BY FIRST_NAME ASC, DEPARTMENT DESC;
+
+-- 3. Fetch Worker details excluding first names 'Vipul' and 'Satish'
+SELECT * 
+FROM Worker 
+WHERE FIRST_NAME NOT IN ('Vipul', 'Satish');
+
+-- 4. Fetch details of Workers whose FIRST_NAME ends with 'h' and contains six alphabets
+SELECT * 
+FROM Worker 
+WHERE FIRST_NAME LIKE '_h';
+
+-- 5. Fetch the count of employees working in the department ‘Admin’
+SELECT COUNT(*) AS Admin_Worker_Count 
+FROM Worker 
+WHERE DEPARTMENT = 'Admin';
+
+-- 6. Fetch worker names with salaries between 50,000 and 100,000 (inclusive)
+SELECT FIRST_NAME, LAST_NAME, SALARY 
+FROM Worker 
+WHERE SALARY BETWEEN 50000 AND 100000;
+
+-- 7. Fetch the number of workers for each department in descending order
+SELECT DEPARTMENT, COUNT(*) AS Worker_Count 
+FROM Worker 
+GROUP BY DEPARTMENT 
+ORDER BY Worker_Count DESC;
+
+-- 8. Determine the 5th highest salary without using TOP or LIMIT
+SELECT SALARY 
+FROM (
+    SELECT SALARY, DENSE_RANK() OVER (ORDER BY SALARY DESC) AS salary_rank
+    FROM Worker
+) AS RankedSalaries
+WHERE salary_rank = 5;
+
+-- 9. Fetch the list of employees with the same salary
+SELECT W1.FIRST_NAME, W1.LAST_NAME, W1.SALARY 
+FROM Worker W1
+JOIN Worker W2 
+ON W1.SALARY = W2.SALARY AND W1.WORKER_ID <> W2.WORKER_ID
+ORDER BY W1.SALARY;
