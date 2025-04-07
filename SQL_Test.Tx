@@ -1,0 +1,115 @@
+TABLE
+
+
+CREATE DATABASE ORG;
+USE ORG;
+
+CREATE TABLE Worker (
+    WORKER_ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    FIRST_NAME CHAR(25),
+    LAST_NAME CHAR(25),
+    SALARY INT,
+    JOINING_DATE DATETIME,
+    DEPARTMENT CHAR(25)
+);
+
+INSERT INTO Worker (WORKER_ID, FIRST_NAME, LAST_NAME, SALARY, JOINING_DATE, DEPARTMENT) VALUES
+    (1, 'Monika', 'Arora', 100000, '2014-02-20 09:00:00', 'HR'),
+    (2, 'Niharika', 'Verma', 80000, '2014-06-11 09:00:00', 'Admin'),
+    (3, 'Vishal', 'Singhal', 300000, '2014-02-20 09:00:00', 'HR'),
+    (4, 'Amitabh', 'Singh', 500000, '2014-02-20 09:00:00', 'Admin'),
+    (5, 'Vivek', 'Bhati', 500000, '2014-06-11 09:00:00', 'Admin'),
+    (6, 'Vipul', 'Diwan', 200000, '2014-06-11 09:00:00', 'Account'),
+    (7, 'Satish', 'Kumar', 75000, '2014-01-20 09:00:00', 'Account'),
+    (8, 'Geetika', 'Chauhan', 90000, '2014-04-11 09:00:00', 'Admin');
+
+CREATE TABLE Bonus (
+    WORKER_REF_ID INT,
+    BONUS_AMOUNT INT,
+    BONUS_DATE DATETIME,
+    FOREIGN KEY (WORKER_REF_ID) REFERENCES Worker(WORKER_ID) ON DELETE CASCADE
+);
+
+INSERT INTO Bonus (WORKER_REF_ID, BONUS_AMOUNT, BONUS_DATE) VALUES
+    (1, 5000, '2016-02-20 00:00:00'),
+    (2, 3000, '2016-06-11 00:00:00'),
+    (3, 4000, '2016-02-20 00:00:00'),
+    (1, 4500, '2016-02-20 00:00:00'),
+    (2, 3500, '2016-06-11 00:00:00');
+
+CREATE TABLE Title (
+    WORKER_REF_ID INT,
+    WORKER_TITLE CHAR(25),
+    AFFECTED_FROM DATETIME,
+    FOREIGN KEY (WORKER_REF_ID) REFERENCES Worker(WORKER_ID) ON DELETE CASCADE
+);
+
+INSERT INTO Title (WORKER_REF_ID, WORKER_TITLE, AFFECTED_FROM) VALUES
+    (1, 'Manager', '2016-02-20 00:00:00'),
+    (2, 'Executive', '2016-06-11 00:00:00'),
+    (8, 'Executive', '2016-06-11 00:00:00'),
+    (5, 'Manager', '2016-06-11 00:00:00'),
+    (4, 'Asst. Manager', '2016-06-11 00:00:00'),
+    (7, 'Executive', '2016-06-11 00:00:00'),
+    (6, 'Lead', '2016-06-11 00:00:00'),
+    (3, 'Lead', '2016-06-11 00:00:00');
+
+
+
+--ANSWERS--
+-- 1. Fetch all Worker details ordered by FIRST_NAME in Ascending order
+SELECT * 
+FROM Worker 
+ORDER BY FIRST_NAME ASC;
+
+-- 2. Fetch all Worker details ordered by FIRST_NAME (Ascending) and DEPARTMENT (Descending)
+SELECT * 
+FROM Worker 
+ORDER BY FIRST_NAME ASC, DEPARTMENT DESC;
+
+-- 3. Fetch Worker details excluding first names 'Vipul' and 'Satish'
+SELECT * 
+FROM Worker 
+WHERE FIRST_NAME NOT IN ('Vipul', 'Satish');
+
+-- 4. Fetch details of Workers whose FIRST_NAME ends with 'h' and contains six alphabets
+SELECT * 
+FROM Worker 
+WHERE FIRST_NAME LIKE '_____h';
+
+-- 5. Fetch the count of employees working in the department ‘Admin’
+SELECT COUNT(*) AS Admin_Worker_Count 
+FROM Worker 
+WHERE DEPARTMENT = 'Admin';
+
+-- 6. Fetch worker names with salaries between 50,000 and 100,000 (inclusive)
+SELECT FIRST_NAME, LAST_NAME, SALARY 
+FROM Worker 
+WHERE SALARY BETWEEN 50000 AND 100000;
+
+-- 7. Fetch the number of workers for each department in descending order
+SELECT DEPARTMENT, COUNT(*) AS Worker_Count 
+FROM Worker 
+GROUP BY DEPARTMENT 
+ORDER BY Worker_Count DESC;
+
+-- 8. Determine the 5th highest salary without using TOP or LIMIT
+SELECT SALARY 
+FROM (
+    SELECT SALARY, DENSE_RANK() OVER (ORDER BY SALARY DESC) AS salary_rank
+    FROM Worker
+) AS RankedSalaries
+WHERE salary_rank = 5;
+
+-- 9. Fetch the list of employees with the same salary
+SELECT W1.FIRST_NAME, W1.LAST_NAME, W1.SALARY 
+FROM Worker W1
+JOIN Worker W2 
+ON W1.SALARY = W2.SALARY AND W1.WORKER_ID <> W2.WORKER_ID
+ORDER BY W1.SALARY;
+
+-- 10. Fetch the departments that have less than three people in it
+SELECT DEPARTMENT 
+FROM Worker 
+GROUP BY DEPARTMENT 
+HAVING COUNT(*) < 3;
